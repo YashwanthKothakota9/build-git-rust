@@ -11,50 +11,17 @@ commits, trees etc.), Git's transfer protocols and more.
 **Note**: If you're viewing this repo on GitHub, head over to
 [codecrafters.io](https://codecrafters.io) to try the challenge.
 
-# Passing the first stage
 
-The entry point for your Git implementation is in `src/main.rs`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
-```
+<h1 align="center">Git from scratch in Rust</h1>
 
-That's all!
+<div align="center">
+    <img src="/rust-image-3.png" alt="Project progress image">
+</div>
 
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `cargo (1.87)` installed locally
-1. Run `./your_program.sh` to run your Git implementation, which is implemented
-   in `src/main.rs`. This command compiles your Rust project, so it might be
-   slow the first time you run it. Subsequent runs will be fast.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
-
-# Testing locally
-
-The `your_program.sh` script is expected to operate on the `.git` folder inside
-the current working directory. If you're running this inside the root of this
-repository, you might end up accidentally damaging your repository's `.git`
-folder.
-
-We suggest executing `your_program.sh` in a different folder when testing
-locally. For example:
-
-```sh
-mkdir -p /tmp/testing && cd /tmp/testing
-/path/to/your/repo/your_program.sh init
-```
-
-To make this easier to type out, you could add a
-[shell alias](https://shapeshed.com/unix-alias/):
-
-```sh
-alias mygit=/path/to/your/repo/your_program.sh
-
-mkdir -p /tmp/testing && cd /tmp/testing
-mygit init
-```
+### Stages:
+1. Initialize the `.git` repository - `git init`
+2. Read a `blob` object - `git cat-file`
+3. Create a `blob` object - `git hash-object`
+4. Read a `tree` object - `git ls-tree`
+5. Write a `tree` object - `git write-tree`
