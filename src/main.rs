@@ -63,6 +63,25 @@ fn main() {
         object_file.write_all(&compressed_data).unwrap();
         // print the hash string
         print!("{}", hash_string);
+    } else if args[1] == "ls-tree" && args[2] == "--name-only" {
+        let tree_hash = args[3].clone();
+        let tree_path = format!(".git/objects/{}/{}", &tree_hash[0..2], &tree_hash[2..]);
+        let file = File::open(tree_path).unwrap();
+        let mut decompressed_data = Vec::new();
+        let mut zlib = ZlibDecoder::new(file);
+        zlib.read_to_end(&mut decompressed_data).unwrap();
+
+        let null_pos = decompressed_data.iter().position(|&b| b == 0).unwrap();
+        let mut entries_data = &decompressed_data[null_pos + 1..];
+
+        while !entries_data.is_empty() {
+            let null_pos = entries_data.iter().position(|&b| b == 0).unwrap();
+            let mode_name = String::from_utf8(entries_data[0..null_pos].to_vec()).unwrap();
+            let parts: Vec<&str> = mode_name.split(' ').collect();
+            let filename = parts[1];
+            println!("{}", filename);
+            entries_data = &entries_data[null_pos + 1 + 20..];
+        }
     } else {
         println!("unknown command: {}", args[1])
     }
