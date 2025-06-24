@@ -164,6 +164,66 @@ fn main() {
             .map(|b| format!("{:02x}", b))
             .collect::<String>();
         print!("{}", hash_string);
+    } else if args[1] == "commit-tree" {
+        let tree_hash = args[2].clone();
+
+        // Parse command line arguments for parent (-p) and message (-m)
+        let mut parent_hash = String::new();
+        let mut message = String::new();
+
+        let mut i = 3;
+        while i < args.len() {
+            if args[i] == "-p" && i + 1 < args.len() {
+                parent_hash = args[i + 1].clone();
+                i += 2;
+            } else if args[i] == "-m" && i + 1 < args.len() {
+                message = args[i + 1].clone();
+                i += 2;
+            } else {
+                i += 1;
+            }
+        }
+
+        // Build the commit content in Git's format
+        let mut commit_content = String::new();
+        commit_content.push_str(&format!("tree {}\n", tree_hash));
+
+        if !parent_hash.is_empty() {
+            commit_content.push_str(&format!("parent {}\n", parent_hash));
+        }
+
+        let author_info = "John Doe <john.doe@example.com> 1719158400 +0000";
+        commit_content.push_str(&format!("author {}\n", author_info));
+        commit_content.push_str(&format!("committer {}\n", author_info));
+        commit_content.push('\n'); // Empty line before message
+        commit_content.push_str(&message);
+        commit_content.push('\n');
+
+        // Create the full Git object with header
+        let content_bytes = commit_content.as_bytes();
+        let header = format!("commit {}\0", content_bytes.len());
+        let mut commit_object = Vec::new();
+        commit_object.extend_from_slice(header.as_bytes());
+        commit_object.extend_from_slice(content_bytes);
+
+        // Calculate SHA-1 hash
+        let mut hasher = Sha1::new();
+        hasher.update(&commit_object);
+        let commit_hash_bytes = hasher.finalize();
+        let hash_string = format!("{:x}", commit_hash_bytes);
+
+        // Compress and save
+        let mut zlib =
+            ZlibEncoder::new(std::io::Cursor::new(commit_object), Compression::default());
+        let mut compressed_data = Vec::new();
+        zlib.read_to_end(&mut compressed_data).unwrap();
+
+        let object_path = format!(".git/objects/{}/{}", &hash_string[0..2], &hash_string[2..]);
+        fs::create_dir_all(format!(".git/objects/{}", &hash_string[0..2])).unwrap();
+        let mut object_file = File::create(object_path).unwrap();
+        object_file.write_all(&compressed_data).unwrap();
+
+        print!("{}", hash_string);
     } else {
         println!("unknown command: {}", args[1])
     }
