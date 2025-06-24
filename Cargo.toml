@@ -1,13 +1,20 @@
 [package]
-name = "codecrafters-git"
+name = "mygit"
 version = "0.1.0"
 authors = ["Codecrafters <hello@codecrafters.io>"]
 edition = "2021"
 rust-version = "1.80"
 
+[[bin]]
+name = "codecrafters-git"
+path = "src/main.rs"
+
 [dependencies]
 anyhow = "1.0.68"                                # error handling
 bytes = "1.3.0"                                  # helps manage buffers
-flate2 = "1.0.34"                                # compression
+flate2 = "1.0"
 thiserror = "1.0.38"                             # error handling
-sha1 = "0.10.6"
+sha1 = "0.10"
+reqwest = { version = "0.11", features = ["blocking"] }
+tar = "0.4.44"
+hex = "0.4"
