@@ -25,3 +25,5 @@ commits, trees etc.), Git's transfer protocols and more.
 3. Create a `blob` object - `git hash-object`
 4. Read a `tree` object - `git ls-tree`
 5. Write a `tree` object - `git write-tree`
+6. Create a `commit` - `git commit-tree`
+7. `Clone` repository
